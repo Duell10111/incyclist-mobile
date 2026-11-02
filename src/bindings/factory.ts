@@ -19,6 +19,7 @@ import { getFormBinding } from './form';
 import { MobileDownloadManager } from './download';
 import { getMapAvailabilityBinding } from './mapAvailability';
 import { getFileAccessBinding } from './fileAccess';
+import { getSerialBinding } from './serial';
 
 
 let _bindings:IncyclistBindings|undefined
@@ -56,6 +57,8 @@ export const initBindings = async  ()=> {
     // The loader is wrapped so a route-file read waits for an iCloud download first; on other
     // platforms bindings.loader stays exactly what getFileLoaderBinding() returned above.
     if (Platform.OS === 'ios') {
+        // serial interface backed by External Accessory sessions (e.g. Kettler Racer S)
+        bindings.serial = getSerialBinding()
         bindings.fileAccess = getFileAccessBinding()
         bindings.loader = withExternalFileAccess(bindings.loader)
     }

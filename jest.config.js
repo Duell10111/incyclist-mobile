@@ -15,5 +15,7 @@ module.exports = {
     'react-native-safe-area-context': '<rootDir>/__mocks__/react-native-safe-area-context.ts',
     'react-native-inappbrowser-reborn': '<rootDir>/__mocks__/react-native-inappbrowser-reborn.ts',
     '@react-navigation/native': '<rootDir>/src/__mocks__/@react-navigation/native.ts', // Added for ESM module support
+    // local Expo module (native, iOS only) - its index imports 'expo', which is ESM-only
+    'modules/incyclist-accessory$': '<rootDir>/__mocks__/incyclist-accessory.ts',
   },
 };

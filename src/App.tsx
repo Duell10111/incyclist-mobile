@@ -14,6 +14,7 @@ import { PropsWithChildren, ReactElement, useEffect, useRef, useState } from 're
 import { AppFeatures, IncyclistBindings } from 'incyclist-services';
 import { ApiConfiguration, flushLogs, useIncyclist } from './services';
 import { initBindings } from './bindings/factory';
+import { selectSerialProtocol } from './bindings/serial';
 import app from '../app.json';
 import { useLogging, useUnmountEffect } from './hooks';
 import { LoadingScreen } from './pages/LoadingScreen/LoadingScreen';
@@ -116,7 +117,8 @@ export const App = ({ secretsStatus }: AppProps) => {
         logEvent({ message: 'Initializing App' });
 
         const features: AppFeatures = {
-            interfaces: ['wifi', 'ble'],
+            // serial: External Accessory (MFi) devices such as the Kettler Racer S - iOS only
+            interfaces: Platform.OS === 'ios' ? ['wifi', 'ble', 'serial'] : ['wifi', 'ble'],
             ble: '*',
             wifi: '*',
         };
@@ -130,6 +132,8 @@ export const App = ({ secretsStatus }: AppProps) => {
 
                 const uiVersion = bindings.appInfo?.getUIVersion() ?? app.bundleVersion;
                 await service.onAppLaunch('mobile', uiVersion, features);
+                if (Platform.OS === 'ios')
+                    selectSerialProtocol()
 
                 // Ensure x-uuid is in API headers — initRestLogging may have run before
                 // uuid was generated on first launch

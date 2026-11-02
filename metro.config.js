@@ -76,13 +76,24 @@ const config = {
         babelTransformerPath: require.resolve('react-native-svg-transformer'),
     },
     resolver: {
+        // The serial interface (iOS: External Accessory devices) needs the real @serialport packages, which
+        // need real streams - while 'stream' stays mocked for everything else (see extraNodeModules):
+        // - @serialport/* is always resolved from this app (a local incyclist-devices lib is outside the
+        //   watched folders and would otherwise fall back to the mock)
+        // - 'stream' required by @serialport/* resolves to stream-browserify
+        resolveRequest: (context, moduleName, platform) => {
+            if (moduleName.startsWith('@serialport/'))
+                return context.resolveRequest({ ...context, originModulePath: path.resolve(__dirname, 'index.js') }, moduleName, platform)
+            if (moduleName === 'stream' && /[/\\]@serialport[/\\]/.test(context.originModulePath))
+                return context.resolveRequest(context, 'stream-browserify', platform)
+            return context.resolveRequest(context, moduleName, platform)
+        },
 
         blockList,
         assetExts: assetExts.filter((ext) => ext !== 'svg'),
         sourceExts: [...sourceExts, 'svg'],        
         extraNodeModules: new Proxy({
             'incyclist-ant-plus': path.resolve(__dirname, 'polyfill/node-mocks.js'),
-            '@serialport/stream': path.resolve(__dirname, 'polyfill/node-mocks.js'),
             'events': path.resolve(__dirname, 'node_modules/events'),
             'node:events':path.resolve(__dirname, 'node_modules/events'),
             'serialport': path.resolve(__dirname, 'polyfill/node-mocks.js'), // FIXED: was empty-module

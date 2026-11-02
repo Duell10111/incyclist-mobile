@@ -1,25 +1,26 @@
 import UIKit
+internal import Expo
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: ExpoAppDelegate {
     var window: UIWindow?
     var reactNativeDelegate: ReactNativeDelegate?
     var reactNativeFactory: RCTReactNativeFactory?
 
-    func application(
+    override func application(
         _ application: UIApplication, 
         supportedInterfaceOrientationsFor window: UIWindow? ) -> UIInterfaceOrientationMask {
       return .landscape
     }
 	
-    func application(
+    override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         let delegate = ReactNativeDelegate()
-        let factory = RCTReactNativeFactory(delegate: delegate)
+        let factory = ExpoReactNativeFactory(delegate: delegate)
         delegate.dependencyProvider = RCTAppDependencyProvider()
 
         reactNativeDelegate = delegate
@@ -41,10 +42,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //    window?.rootViewController = fullScreenVC
         //}        
 
-        return true
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
-    func application(
+    override func application(
         _ application: UIApplication,
         handleEventsForBackgroundURLSession identifier: String,
         completionHandler: @escaping () -> Void) {
@@ -52,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }    
 }
 
-class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
+class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
     // 0.83.1 uses bundleURL() as the primary source for the factory
     override func bundleURL() -> URL? {
         let defaults = UserDefaults.standard
@@ -77,6 +78,7 @@ class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
 
     // Explicitly point sourceURL to our bundleURL logic for backward compatibility
     override func sourceURL(for bridge: RCTBridge) -> URL? {
-        return self.bundleURL()
+        // bridge.bundleURL is needed to return the correct URL for expo-dev-client
+        return bridge.bundleURL ?? bundleURL()
     }
 }

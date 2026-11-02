@@ -1,7 +1,8 @@
 // metro.config.js
 const path = require('path');
 const fs = require('fs'); 
-const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+const { getDefaultConfig } = require('expo/metro-config');
+const { mergeConfig } = require('@react-native/metro-config');
 
 // 1. Define the path to your library source
 const servicesPath = path.resolve(__dirname, '../services/lib/esm');

@@ -38,6 +38,7 @@
     "@zoontek/react-native-navigation-bar": "^1.1.0",
     "axios": "^1.17.0",
     "events": "^3.3.0",
+    "expo": "~55.0.0",
     "gd-eventlog": "^0.1.27",
     "incyclist-services": "^1.9.7",
     "mqtt": "^5.15.2",
@@ -101,6 +102,7 @@
     "@types/react-native-keep-awake": "^2.0.8",
     "@types/react-test-renderer": "^19.1.0",
     "babel-plugin-module-resolver": "^5.0.2",
+    "babel-preset-expo": "~55.0.8",
     "crypto-browserify": "^3.12.1",
     "eslint": "^8.57.1",
     "eslint-plugin-storybook": "^10.6.2",
@@ -135,6 +137,13 @@
         "StreetView": "RCTStreetViewComponentView",
         "SatelliteView": "RCTSatelliteViewComponentView"
       }
+    }
+  },
+  "expo": {
+    "autolinking": {
+      "exclude": [
+        "@bam.tech/react-native-make"
+      ]
     }
   }
 }

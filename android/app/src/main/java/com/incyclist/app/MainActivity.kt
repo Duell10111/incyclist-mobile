@@ -1,4 +1,5 @@
 package com.incyclist.app
+import expo.modules.ReactActivityDelegateWrapper
 
 import android.os.Bundle // Required for onCreate
 import android.content.Intent
@@ -45,7 +46,7 @@ class MainActivity : ReactActivity() {
      * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
      */
     override fun createReactActivityDelegate(): ReactActivityDelegate =
-        DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+        ReactActivityDelegateWrapper(this, BuildConfig.IS_NEW_ARCHITECTURE_ENABLED, DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled))
 
 
     override fun onConfigurationChanged(newConfig: Configuration) {

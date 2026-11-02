@@ -99,3 +99,7 @@ ios/*.xcodeproj/project.xcworkspace/xcshareddata/SwiftPM/Package.resolved
 ios/assets/*
 .env.debug
 .env.dev
+# Expo
+.expo
+dist/
+web-build/

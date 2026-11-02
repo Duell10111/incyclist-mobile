@@ -1,4 +1,8 @@
 package com.incyclist.app
+import android.content.res.Configuration
+import expo.modules.ApplicationLifecycleDispatcher
+import expo.modules.ExpoReactHostFactory
+import expo.modules.ReactNativeHostWrapper
 
 
 import android.app.Application
@@ -24,7 +28,7 @@ class MainApplication : Application(), ReactApplication {
      * Legacy/Standard Host (Still required for many tools)
      */
     override val reactNativeHost: ReactNativeHost =
-        object : DefaultReactNativeHost(this) {
+        ReactNativeHostWrapper(this, object : DefaultReactNativeHost(this) {
             override fun getPackages(): List<ReactPackage> {
 
                 android.util.Log.d("Incyclist", "Legacy host")
@@ -44,7 +48,7 @@ class MainApplication : Application(), ReactApplication {
             override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
             override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
             override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
-        }
+        })
 
 
     /**
@@ -121,7 +125,7 @@ class MainApplication : Application(), ReactApplication {
         packages.add(MapAvailabilityPackage())
         packages.add(AudioCuePackage())
 
-        getDefaultReactHost(
+        ExpoReactHostFactory.getDefaultReactHost(
             context = applicationContext,
             packageList = packages,
             jsMainModulePath = "index", // This must be a non-null String
@@ -149,5 +153,11 @@ class MainApplication : Application(), ReactApplication {
         //     load()
         // }
 
-    }
+      ApplicationLifecycleDispatcher.onApplicationCreate(this)
+  }
+
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    ApplicationLifecycleDispatcher.onConfigurationChanged(this, newConfig)
+  }
 }
